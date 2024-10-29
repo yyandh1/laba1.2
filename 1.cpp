@@ -160,6 +160,7 @@ int evaluatePostfix(const string& expression) {
 }
 
 int main() {
+    system("chcp 65001");
     string infixExpression;
 
     cout << "Введите выражение: ";
