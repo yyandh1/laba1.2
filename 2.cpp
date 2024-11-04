@@ -59,6 +59,7 @@ struct HashSet {
         }
 
         int index = hash(value);
+<<<<<<< HEAD
         Node* newNode = new Node{value, nullptr};
 
         // Вставка в начало цепочки
@@ -68,6 +69,10 @@ struct HashSet {
             newNode->next = table[index];
             table[index] = newNode;
         }
+=======
+        Node* newNode = new Node{value, table[index]};
+        table[index] = newNode; // Вставка в начало цепочки
+>>>>>>> 6d962dfd690df6d49fa2fe2e719aea70e43fafe8
     }
 
     void remove(const string& value) {
@@ -123,7 +128,11 @@ private:
     int hash(const string& value) const {
         int hashValue = 0;
         for (char c : value) {
+<<<<<<< HEAD
             hashValue = (hashValue * 31 + c) % size; 
+=======
+            hashValue = (hashValue * 31 + c) % size; // Простейшая хеш-функция
+>>>>>>> 6d962dfd690df6d49fa2fe2e719aea70e43fafe8
         }
         return hashValue;
     }
