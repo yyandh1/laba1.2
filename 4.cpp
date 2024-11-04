@@ -1,63 +1,55 @@
 #include <iostream>
-
+#include <vector>
+#include <Windows.h>
 using namespace std;
 
 const int MAX_SIZE = 100; // Максимальный размер массива
 
 // Структура для хранения подмассива
 struct Subarray {
-    char data[MAX_SIZE]; // Данные подмассива
-    int size; // Размер подмассива
+    vector<char> data; // Данные подмассива
 };
 
 // Функция для проверки, существует ли подмассив в массиве уникальных подмассивов
-bool existsInUnique(Subarray unique[], int uniqueCount, Subarray subarray) {
-    for (int i = 0; i < uniqueCount; ++i) {
-        if (unique[i].size == subarray.size) {
-            bool isSame = true;
-            for (int j = 0; j < subarray.size; ++j) {
-                if (unique[i].data[j] != subarray.data[j]) {
-                    isSame = false;
-                    break;
-                }
-            }
-            if (isSame) return true;
+bool existsInUnique(const vector<Subarray>& unique, const Subarray& subarray) {
+    for (const auto& uniqueSubarray : unique) {
+        if (uniqueSubarray.data == subarray.data) {
+            return true;
         }
     }
     return false;
 }
 
 void generateSubarrays(char arr[], int n) {
-    Subarray unique[MAX_SIZE]; // Для хранения уникальных подмассивов
-    int uniqueCount = 0;
+    vector<Subarray> unique; // Для хранения уникальных подмассивов
 
-    // Генерация всех подмассивов
-    for (int start = 0; start < n; ++start) {
-        for (int end = start; end < n; ++end) {
-            Subarray subarray; // Временный подмассив
-            subarray.size = end - start + 1;
-            for (int k = 0; k < subarray.size; ++k) {
-                subarray.data[k] = arr[start + k];
+    // Генерация всех подмассивов с использованием битовых масок
+    int totalSubarrays = 1 << n; // 2^n подмассивов
+    for (int mask = 0; mask < totalSubarrays; ++mask) {
+        Subarray subarray;
+        for (int i = 0; i < n; ++i) {
+            // Если i-й бит установлен в 1, добавляем элемент в подмассив
+            if (mask & (1 << i)) {
+                subarray.data.push_back(arr[i]);
             }
+        }
 
-            // Проверка на уникальность и добавление подмассива
-            if (!existsInUnique(unique, uniqueCount, subarray)) {
-                unique[uniqueCount] = subarray;
-                uniqueCount++;
-            }
+        // Проверка на уникальность и добавление подмассива
+        if (!existsInUnique(unique, subarray)) {
+            unique.push_back(subarray);
         }
     }
 
     // Вывод уникальных подмассивов
     cout << "Результат работы алгоритма: [";
-    for (int i = 0; i < uniqueCount; ++i) {
+    for (size_t i = 0; i < unique.size(); ++i) {
         cout << "{";
-        for (int j = 0; j < unique[i].size; ++j) {
+        for (size_t j = 0; j < unique[i].data.size(); ++j) {
             cout << unique[i].data[j];
-            if (j < unique[i].size - 1) cout << ", ";
+            if (j < unique[i].data.size() - 1) cout << ", ";
         }
         cout << "}";
-        if (i < uniqueCount - 1) cout << ", ";
+        if (i < unique.size() - 1) cout << ", ";
     }
     cout << "]" << endl;
 }
